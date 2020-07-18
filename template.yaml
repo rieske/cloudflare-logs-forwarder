@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloudflare-logs-forwarder
+
+  Sample SAM Template for cloudflare-logs-forwarder
+
+Globals:
+  Function:
+    Timeout: 30
+
+Parameters:
+  CloudflareLogPushUserArn:
+    Type: String
+    Description: ARN of the Cloudflare user that will push the logs to S3 bucket
+  LogForwarderHttpEndpoint:
+    Type: String
+    Description: HTTP endpoint where the logs will be sent
+  LogForwarderCredentials:
+    Type: String
+    Description: Basic Auth credentials for the log consuming HTTP endpoint
+
+Resources:
+  LogsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: cloudflare-logs
+      LifecycleConfiguration:
+        Rules:
+        - Id: GlacierArchiveRule
+          Status: Disabled # Enable archiving policy for large log volumes
+          Transitions:
+          - TransitionInDays: 30
+            StorageClass: GLACIER
+
+  CloudflareLogPushPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LogsBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:PutObject
+            Effect: Allow
+            Resource: !Join [ "", [ "arn:aws:s3:::", !Ref LogsBucket, "/*" ] ]
+            Principal:
+              AWS: !Ref CloudflareLogPushUserArn
+
+  CloudflareLogsForwarderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: cloudflare-logs-forwarder-function
+      Handler: lt.rieske.logs.forwarder.S3EventHandler::handleRequest
+      Runtime: java11
+      MemorySize: 256
+      Environment:
+        Variables:
+          LogForwarderHttpEndpoint: !Ref LogForwarderHttpEndpoint
+          LogForwarderCredentials: !Ref LogForwarderCredentials
+      Events:
+        ClousflareLogs:
+          Type: S3 # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#s3
+          Properties:
+            Bucket: !Ref LogsBucket
+            Events: s3:ObjectCreated:*
+
+Outputs:
+  CloudflareLogsForwarderFunction:
+    Description: Cloudflare Logs Forwarder Function ARN
+    Value: !GetAtt CloudflareLogsForwarderFunction.Arn
