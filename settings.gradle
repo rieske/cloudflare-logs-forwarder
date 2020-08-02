@@ -1,0 +1,1 @@
+include("cloudflare-logs-forwarder-function")
