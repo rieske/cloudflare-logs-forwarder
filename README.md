@@ -1,5 +1,9 @@
 # cloudflare-logs-forwarder
 
+[![Actions Status](https://github.com/rieske/cloudflare-logs-forwarder/workflows/build/badge.svg)](https://github.com/rieske/cloudflare-logs-forwarder/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e4b0e3c1814a38b4408f/maintainability)](https://codeclimate.com/github/rieske/cloudflare-logs-forwarder/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e4b0e3c1814a38b4408f/test_coverage)](https://codeclimate.com/github/rieske/cloudflare-logs-forwarder/test_coverage)
+
 This project contains an AWS Lambda function that:
 
  - listens to S3 events with uploaded Cloudflare logs using Cloudflare's [logpush](https://developers.cloudflare.com/logs/logpush) service
