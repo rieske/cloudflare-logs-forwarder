@@ -22,10 +22,9 @@ jobs:
       working-directory: cloudflare-logs-forwarder-function
     - name: Upload code coverage report to codeclimate
       uses: paambaati/codeclimate-action@v2.6.0
-      working-directory: cloudflare-logs-forwarder-function
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         JACOCO_SOURCE_PATH: src/main/java
       with:
-        coverageCommand: ./gradlew jacocoTestReport
-        coverageLocations: "${{github.workspace}}/build/reports/jacoco/test/jacocoTestReport.xml:jacoco"
+        coverageCommand: cd cloudflare-logs-forwarder-function && ./gradlew jacocoTestReport
+        coverageLocations: "${{github.workspace}}/cloudflare-logs-forwarder-function/build/reports/jacoco/test/jacocoTestReport.xml:jacoco"
