@@ -4,6 +4,7 @@ import com.adobe.testing.s3mock.junit5.S3MockExtension;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
 import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.http.RequestListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,6 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(S3MockExtension.class)
 class S3EventHandlerTest {
 
+    private static final String SMALL_LOG = "logs.json.gz";
+    private static final String LARGE_LOG = "log-large.json.gz";
+
     private static final Path RESOURCES_DIR = Path.of("src/test/resources");
 
     @Test
@@ -36,7 +41,7 @@ class S3EventHandlerTest {
         var eventHandler = new S3EventHandler(s3, Function.identity(), logs::add, () -> {
         });
 
-        eventHandler.handleRequest(logsUploadedEvent(s3), null);
+        eventHandler.handleRequest(logsUploadedEvent(s3, SMALL_LOG), null);
 
         assertThat(logs).containsExactly(
                 "{\"CacheCacheStatus\":\"cache1\",\"CacheResponseBytes\":1,\"CacheResponseStatus\":1,\"ClientCountry\":\"LT\",\"ClientIP\":\"127.0.0.1\",\"ClientIPClass\":\"clean\",\"ClientRequestHost\":\"foo.bar\",\"ClientRequestBytes\":42,\"ClientRequestMethod\":\"GET\",\"ClientRequestURI\":\"/foo/bar\",\"ClientRequestAgent\":\"curl foo bar\",\"EdgeResponseBytes\":42,\"EdgeResponseStatus\":200,\"EdgeStartTimestamp\":1,\"EdgeEndTimestamp\":2,\"RayID\":\"foobar\"}",
@@ -50,7 +55,7 @@ class S3EventHandlerTest {
         withLogConsumingHttpServer(endpoint -> {
             var eventHandler = new S3EventHandler(s3, endpoint, "credentials", 100);
 
-            eventHandler.handleRequest(logsUploadedEvent(s3), null);
+            eventHandler.handleRequest(logsUploadedEvent(s3, SMALL_LOG), null);
         }).assertLogBodySent("GET foo.bar /foo/bar 127.0.0.1 LT 200 42 cache1 foobar 1 2 null\n" +
                 "PATCH fizz.buzz /fizz/buzz 127.0.0.2 PL 201 11 cache2 fizzbuzz 2 3 null\n" +
                 "POST banana.potato /banana/potato 127.0.0.3 DE 201 11 cache3 bananapotato 2 3 null\n");
@@ -61,15 +66,34 @@ class S3EventHandlerTest {
         withLogConsumingHttpServer(endpoint -> {
             var eventHandler = new S3EventHandler(s3, endpoint, "credentials", 2);
 
-            eventHandler.handleRequest(logsUploadedEvent(s3), null);
+            eventHandler.handleRequest(logsUploadedEvent(s3, SMALL_LOG), null);
         }).assertLogBodySent("GET foo.bar /foo/bar 127.0.0.1 LT 200 42 cache1 foobar 1 2 null\n" +
                 "PATCH fizz.buzz /fizz/buzz 127.0.0.2 PL 201 11 cache2 fizzbuzz 2 3 null\n"
         ).assertLogBodySent("POST banana.potato /banana/potato 127.0.0.3 DE 201 11 cache3 bananapotato 2 3 null\n");
     }
 
+    @Test
+    void transformsAndForwardsLargeLog(S3Client s3) {
+        var bytesForwarded = new AtomicLong(0);
+        RequestListener payloadSizeCounter = (request, response) -> bytesForwarded.addAndGet(request.getBody().length);
+
+        withLogConsumingHttpServer(payloadSizeCounter, endpoint -> {
+            var eventHandler = new S3EventHandler(s3, endpoint, "credentials", 1000);
+
+            eventHandler.handleRequest(logsUploadedEvent(s3, LARGE_LOG), null);
+        }).assertNumberOfBatchesSent(300);
+
+        System.out.println("Megabytes forwarded: " + bytesForwarded.get()/1024/1024);
+    }
+
     private static LogDispatchAsserter withLogConsumingHttpServer(Consumer<String> test) {
+        return withLogConsumingHttpServer((request, response) -> {}, test);
+    }
+
+    private static LogDispatchAsserter withLogConsumingHttpServer(RequestListener requestListener, Consumer<String> test) {
         var server = new WireMockServer(options().dynamicPort());
         try {
+            server.addMockServiceRequestListener(requestListener);
             server.start();
             server.stubFor(post(urlPathEqualTo("/")).willReturn(aResponse().withStatus(200)));
             test.accept(server.baseUrl());
@@ -90,11 +114,15 @@ class S3EventHandlerTest {
             server.verify(1, postRequestedFor(urlPathEqualTo("/")).withRequestBody(equalTo(body)));
             return this;
         }
+
+        LogDispatchAsserter assertNumberOfBatchesSent(int batches) {
+            server.verify(batches, postRequestedFor(urlPathEqualTo("/")));
+            return this;
+        }
     }
 
-    private static S3Event logsUploadedEvent(S3Client s3) {
+    private static S3Event logsUploadedEvent(S3Client s3, String key) {
         String bucketName = "test-cloudflare-logs";
-        String key = "logs.json.gz";
 
         s3.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
         s3.putObject(PutObjectRequest.builder().bucket(bucketName).key(key).build(), RESOURCES_DIR.resolve(key));

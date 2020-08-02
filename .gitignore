@@ -1,5 +1,9 @@
 .idea
 .aws-sam
 .gradle
+.classpath
+.project
+.settings/
 build/
 out/
+bin/
