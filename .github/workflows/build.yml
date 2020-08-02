@@ -20,8 +20,4 @@ jobs:
     - name: Build
       run: ./gradlew build
       working-directory: cloudflare-logs-forwarder-function
-    - name: Build with SAM
-      uses: TractorZoom/sam-cli-action@v.0.2.0
-      with:
-        sam_command: "build"
-        
+
