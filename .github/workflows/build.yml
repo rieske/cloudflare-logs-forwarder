@@ -19,7 +19,6 @@ jobs:
         java-version: 11
     - name: Build
       run: ./gradlew build
-      working-directory: cloudflare-logs-forwarder-function
     - name: Upload code coverage report to codeclimate
       uses: paambaati/codeclimate-action@v2.6.0
       env:
