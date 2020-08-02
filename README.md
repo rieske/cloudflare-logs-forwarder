@@ -52,7 +52,13 @@ To use the SAM CLI, you need the following tools.
 
 ## Build and deploy
 
-To build and deploy your application for the first time, run the following in your shell:
+To build and test the lambda function, run:
+
+```bash
+./gradlew build
+```
+
+To build and deploy the serverless application for the first time, run the following:
 
 ```bash
 sam build
