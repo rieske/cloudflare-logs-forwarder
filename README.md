@@ -26,7 +26,7 @@ and by stripping the json field names that add a lot of overhead given large amo
 This can reduce the amount of ingested data by a factor of 10 and more depending on the data fields needed.
 
 An overhead is that the aggregator needs to know how to parse the new format. 
-If Elastic stack is used, this can be done by using a simple [GROK](https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html#grok-basics) filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html#grok-basics) pattern.
+If Elastic stack is used, this can be done by using a simple [GROK](https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html#grok-basics) filter.
 Proprietary services can also be configured to parse the custom format of incoming logs.
 
 ## Structure
