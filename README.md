@@ -14,7 +14,7 @@ and
 to adjust the data extraction to your needs)
  - forwards the compacted log lines in batches via HTTP to an arbitrary log aggregator 
 (replace [HttpLogConsumer](cloudflare-logs-forwarder-function/src/main/java/lt/rieske/logs/forwarder/HttpLogConsumer.java)
-with a client of choice for your aggregator)
+implementation with a client of choice for your aggregator)
  
 ## Context
 
