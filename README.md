@@ -7,8 +7,14 @@
 This project contains an AWS Lambda function that:
 
  - listens to S3 events with uploaded Cloudflare logs using Cloudflare's [logpush](https://developers.cloudflare.com/logs/logpush) service
- - compacts the json logs by cherry-picking fields of interest and producing space-delimited log lines
- - forwards the logs via HTTP to an arbitrary log aggregator
+ - compacts the json logs by cherry-picking fields of interest and producing space-delimited log lines 
+(modify [CompactingLogTransformer](cloudflare-logs-forwarder-function/src/main/java/lt/rieske/logs/forwarder/CompactingLogTransformer.java)
+and 
+[CompactingLogTransformerTest](cloudflare-logs-forwarder-function/src/test/java/lt/rieske/logs/forwarder/CompactingLogTransformerTest.java) 
+to adjust the data extraction to your needs)
+ - forwards the compacted log lines in batches via HTTP to an arbitrary log aggregator 
+(replace [HttpLogConsumer](cloudflare-logs-forwarder-function/src/main/java/lt/rieske/logs/forwarder/HttpLogConsumer.java)
+with a client of choice for your aggregator)
  
 ## Context
 
