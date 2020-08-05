@@ -21,7 +21,8 @@ Both analytics and log centralization/aggregation is usually provided by [third 
 that often charge for the amount of data ingested.
 Even if the log aggregation is a self-hosted Elastic stack, the large amounts of data need to be stored somewhere.
 
-This project can reduce the size of logs ingested by an aggregator by selecting only the data fields of interest 
+This project demonstrates how the size of logs ingested by an aggregator can be greatly reduced 
+by selecting only the data fields of interest 
 and by stripping the json field names that add a lot of overhead given large amounts of log lines.
 This can reduce the amount of ingested data by a factor of 10 and more depending on the data fields needed.
 
@@ -29,7 +30,118 @@ An overhead is that the aggregator needs to know how to parse the new format.
 If Elastic stack is used, this can be done by using a simple [GROK](https://www.elastic.co/guide/en/elasticsearch/reference/current/grok-processor.html#grok-basics) filter.
 Proprietary services can also be configured to parse the custom format of incoming logs.
 
-## Structure
+### Example
+
+Let's take a Cloudflare log line with randomly generated fake data (line breaks and indentation added for readability):
+
+```json
+{
+    "CacheCacheStatus":"miss",
+    "CacheResponseBytes":40005,
+    "CacheResponseStatus":401,
+    "CacheTieredFill":false,
+    "ClientASN":1010,
+    "ClientCountry":"YE",
+    "ClientDeviceType":"desktop",
+    "ClientIP":"44.234.108.208",
+    "ClientIPClass":"unknown",
+    "ClientRequestBytes":8270,
+    "ClientRequestHost":"netlog.com",
+    "ClientRequestMethod":"PATCH",
+    "ClientRequestPath":"/odio/condimentum/id/luctus/nec/molestie.js",
+    "ClientRequestProtocol":"HTTP/1.1",
+    "ClientRequestReferer":null,
+    "ClientRequestURI":"/lacinia/aenean/sit/amet/justo/morbi/ut.js",
+    "ClientRequestUserAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Ubuntu/11.10 Chromium/17.0.963.65 Chrome/17.0.963.65 Safari/535.11",
+    "ClientSSLCipher":"911100886-5",
+    "ClientSSLProtocol":"TLSv1.2",
+    "ClientSrcPort":1173,
+    "ClientXRequestedWith":null,
+    "EdgeColoCode":"AMS",
+    "EdgeColoID":30,
+    "EdgeEndTimestamp":"1577429225000",
+    "EdgePathingOp":"wl",
+    "EdgePathingSrc":"macro",
+    "EdgePathingStatus":"nr",
+    "EdgeRateLimitAction":null,
+    "EdgeRateLimitID":0,
+    "EdgeRequestHost":"toplist.cz",
+    "EdgeResponseBytes":49926,
+    "EdgeResponseCompressionRatio":1.67,
+    "EdgeResponseContentType":"image/png",
+    "EdgeResponseStatus":404,
+    "EdgeServerIP":"245.52.27.185",
+    "EdgeStartTimestamp":"1572164553000",
+    "FirewallMatchesActions":"simulate",
+    "FirewallMatchesRuleIDs":"927063863-4",
+    "FirewallMatchesSources":null,
+    "OriginIP":"128.38.86.179",
+    "OriginResponseBytes":19982,
+    "OriginResponseHTTPExpires":"2020-01-15T02:36:44Z",
+    "OriginResponseHTTPLastModified":"2020-05-21T15:18:29Z",
+    "OriginResponseStatus":400,
+    "OriginResponseTime":"1568377562000",
+    "OriginSSLProtocol":"TLSv1.2",
+    "ParentRayID":"730180787-2",
+    "RayID":"323938618-6",
+    "SecurityLevel":"eoff",
+    "WAFAction":"unknown",
+    "WAFFlags":1,
+    "WAFMatchedVar":null,
+    "WAFProfile":"unknown",
+    "WAFRuleID":null,
+    "WAFRuleMessage":null,
+    "WorkerCPUTime":0,
+    "WorkerStatus":"unknown",
+    "WorkerSubrequest":true,
+    "WorkerSubrequestCount":0,
+    "ZoneID":289326123
+}
+```
+
+As you can see, the payload includes quite a bit of data, totalling `1862` bytes. 
+That's a single log line for a single serviced request.
+Let's say for some arbitrary analytics purposes we are only interested in the following fields:
+
+```json
+{
+    "CacheCacheStatus":"miss",
+    "ClientCountry":"YE",
+    "ClientIP":"44.234.108.208",
+    "ClientRequestHost":"netlog.com",
+    "ClientRequestMethod":"PATCH",
+    "ClientRequestURI":"/lacinia/aenean/sit/amet/justo/morbi/ut.js",
+    "ClientRequestUserAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Ubuntu/11.10 Chromium/17.0.963.65 Chrome/17.0.963.65 Safari/535.11",
+    "EdgeEndTimestamp":"1577429225000",
+    "EdgeResponseBytes":49926,
+    "EdgeResponseStatus":404,
+    "EdgeStartTimestamp":"1572164553000",
+    "RayID":"323938618-6"
+}
+```
+
+If we simply remove the fields that are of no interest, we already reduce 
+the payload size of this single request to `514` bytes.
+
+As a next step, we can remove the json field names and maintain the mapping of values to fields at the log aggregator side.
+The aggregator would then be configured to map space delimited values to:
+
+```
+ClientRequestMethod ClientRequestHost ClientRequestURI ClientIP ClientCountry EdgeResponseStatus EdgeResponseBytes CacheCahceStatus RayID EdgeStartTimestamp EdgeEndTimestamp ClientRequestUserAgent
+```
+
+while the payload that it ingests for each log line would look like:
+
+```
+PATCH netlog.com /lacinia/aenean/sit/amet/justo/morbi/ut.js 44.234.108.208 YE 404 49926 miss 323938618-6 1572164553000 1577429225000 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.11 (KHTML, like Gecko) Ubuntu/11.10 Chromium/17.0.963.65 Chrome/17.0.963.65 Safari/535.11
+```
+
+That's `271` bytes of data instead of original `1862` bytes.
+Note that the original data is not lost - it is still stored in the S3 bucket and is available in case there arises
+a need to reingest a different subset of the data or even chew it full.
+
+
+## Project structure
 
 This project contains source code and supporting files for a serverless application that you can deploy with the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
 
