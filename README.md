@@ -158,7 +158,7 @@ This project contains source code and supporting files for a serverless applicat
 The application itself is written in Java11 and built using Gradle.
 The deployment uses several AWS resources, including Cloudformation, Lambda functions and an S3 bucket. 
 
-## Build and deploy
+## Build
 
 This lambda function is a regular Java application built using Gradle. 
 The only prerequisite to build and test it is Java11.
@@ -169,7 +169,7 @@ To build and test the lambda function, run:
 ./gradlew build
 ```
 
-## Deployment
+## Deploy
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds 
 functionality for building and deploying Lambda applications. 
