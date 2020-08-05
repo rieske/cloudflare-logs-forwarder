@@ -120,7 +120,7 @@ Let's say for some arbitrary analytics purposes we are only interested in the fo
 }
 ```
 
-If we simply remove the fields that are of no interest, we already reduce 
+If we simply remove the fields that are of no interest before sending the log to an aggregator, we already reduce 
 the payload size of this single request to `514` bytes.
 
 As a next step, we can remove the json field names and maintain the mapping of values to fields at the log aggregator side.
