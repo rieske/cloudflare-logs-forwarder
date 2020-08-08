@@ -8,7 +8,7 @@ class BatchingLogForwarder implements LogForwarder {
     private final Consumer<String> logConsumer;
     private final StringBuilder batch = new StringBuilder();
 
-    private int currentBatchSize = 0;
+    private int logLinesInCurrentBatch = 0;
 
     BatchingLogForwarder(int batchSize, Consumer<String> logConsumer) {
         this.batchSize = batchSize;
@@ -17,18 +17,18 @@ class BatchingLogForwarder implements LogForwarder {
 
     @Override
     public void flush() {
-        if (currentBatchSize > 0) {
+        if (logLinesInCurrentBatch > 0) {
             logConsumer.accept(batch.toString());
             batch.setLength(0);
-            currentBatchSize = 0;
+            logLinesInCurrentBatch = 0;
         }
     }
 
     @Override
     public void accept(String log) {
         batch.append(log).append("\n");
-        currentBatchSize++;
-        if (currentBatchSize == batchSize) {
+        logLinesInCurrentBatch++;
+        if (logLinesInCurrentBatch == batchSize) {
             flush();
         }
     }
