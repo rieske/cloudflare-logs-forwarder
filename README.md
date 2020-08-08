@@ -293,11 +293,3 @@ You can manually drop one of the test log archives from `cloudflare-logs-forward
 to trigger the lambda if you don't have Cloudflare logpush connected and want to try this out.
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
-
-## Cleanup
-
-To delete the sample application that you created, use the AWS CLI. Assuming you used your project name for the stack name, you can run the following:
-
-```bash
-aws cloudformation delete-stack --stack-name cloudflare-logs-forwarder
-```
