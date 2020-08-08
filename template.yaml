@@ -26,6 +26,7 @@ Parameters:
 Resources:
   LogsBucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
       BucketName: raw-cloudflare-logs
       LifecycleConfiguration:
