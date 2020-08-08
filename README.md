@@ -175,6 +175,77 @@ The Serverless Application Model Command Line Interface (SAM CLI) is an extensio
 functionality for building and deploying Lambda applications. 
 
 To deploy the lambda function, [download and install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+Make sure the AWS CLI user that will deploy the application has the following permissions 
+(you can use the policy template below to create a custom policy in IAM console and attach it to an unprivileged CLI user):
+```yaml
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "SamCliCloudformation",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateChangeSet",
+                "cloudformation:DescribeChangeSet",
+                "cloudformation:ExecuteChangeSet",
+                "cloudformation:DescribeStacks",
+                "cloudformation:DescribeStackEvents",
+                "cloudformation:GetTemplateSummary"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "SamCliS3",
+            "Effect": "Allow",
+            "Action": [
+                "s3:CreateBucket",
+                "s3:PutBucketTagging",
+                "s3:PutBucketVersioning",
+                "s3:PutBucketPolicy",
+                "s3:GetBucketPolicy",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:PutLifecycleConfiguration",
+                "s3:PutBucketNotification"
+            ],
+            "Resource": [
+                "arn:aws:s3:::*"
+            ]
+        },
+        {
+            "Sid": "SamCliLambda",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:CreateFunction",
+                "lambda:GetFunction",
+                "lambda:DeleteFunction",
+                "lambda:AddPermission",
+                "lambda:RemovePermission",
+                "lambda:GetFunctionConfiguration",
+                "lambda:UpdateFunctionCode",
+                "lambda:ListTags",
+                "lambda:TagResource",
+                "lambda:UntagResource"
+            ],
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "SamCliIAM",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
 
 To build and deploy the serverless application, run the following:
 
@@ -183,15 +254,19 @@ sam build
 sam deploy --guided
 ```
 
-The first command will build the source of your application in `cloudflare-logs-lambda-function/build.gradle` using Gradle and
+The first command will build the source of your application using Gradle and
 create a deployment package in the `.aws-sam/build` folder.
 The second command will package and deploy your application to AWS, with a series of prompts:
 
 * **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, default will be `cloudflare-logs-forwarder`.
 * **AWS Region**: The AWS region you want to deploy your app to.
+* **LambdaRoleArn**: ARN of the role with attached AWSLambdaExecute policy
+* **CloudflareLogPushUserArn**: ARN of the Cloudflare user that will be pushing logs to this bucket. You will get this ARN when configuring the logpush in Cloudflare.
+* **LogForwarderHttpEndpoint**: HTTP endpoint where the logs will be forwarded to - this is just an example - modify the source of the function and the passed variable per your needs.
+* **LogForwarderCredentials**: Basic Auth token for the HTTP ingest HTTP endpoint - this is just an example - modify the source of the function and the passed variable per your needs.
 * **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modified IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+* **Allow SAM CLI IAM role creation**: This template is configured to use an external role, passed by **LambdaRoleArn** parameter above so that the function can be deployed by an unprivileged user. Answer `n` here.
+* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to the `samconfig.toml` file, so that next time you can just re-run `sam deploy` without parameters to deploy updates to the lambda function.
 
 ## Fetch, tail, and filter Lambda function logs
 
