@@ -10,6 +10,9 @@ Globals:
     Timeout: 30
 
 Parameters:
+  LambdaRoleArn:
+    Type: String
+    Description: ARN of the Lambda role with AWSLambdaExecute policy
   CloudflareLogPushUserArn:
     Type: String
     Description: ARN of the Cloudflare user that will push the logs to S3 bucket
@@ -24,7 +27,7 @@ Resources:
   LogsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: cloudflare-logs
+      BucketName: raw-cloudflare-logs
       LifecycleConfiguration:
         Rules:
         - Id: GlacierArchiveRule
@@ -50,6 +53,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: cloudflare-logs-forwarder-function
+      Role: !Ref LambdaRoleArn
       Handler: lt.rieske.logs.forwarder.S3EventHandler::handleRequest
       Runtime: java11
       MemorySize: 256
@@ -58,7 +62,7 @@ Resources:
           LogForwarderHttpEndpoint: !Ref LogForwarderHttpEndpoint
           LogForwarderCredentials: !Ref LogForwarderCredentials
       Events:
-        ClousflareLogs:
+        CloudflareLogs:
           Type: S3 # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#s3
           Properties:
             Bucket: !Ref LogsBucket
