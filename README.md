@@ -277,7 +277,7 @@ The second command will package and deploy your application to AWS, with a serie
 * **LogForwarderCredentials**: Basic Auth token for the HTTP ingest HTTP endpoint - this is just an example - modify the source of the function and the passed variable per your needs.
 * **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
 * **Allow SAM CLI IAM role creation**: This template is configured to use an external role, passed by **LambdaRoleArn** parameter above so that the function can be deployed by an unprivileged user. Answer `n` here.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to the `samconfig.toml` file, so that next time you can just re-run `sam deploy` without parameters to deploy updates to the lambda function.
+* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to the `samconfig.toml` file, so that next time you can just re-run `sam build && sam deploy` without parameters to deploy updates to the lambda function.
 
 ## Logs
 
