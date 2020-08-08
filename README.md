@@ -285,7 +285,7 @@ The deployed lambda function will send its logs to Cloudwatch.
 You can tail them from the command line using SAM CLI:
 
 ```bash
-cloudflare-logs-forwarder$ sam logs -n CloudflareLogsForwarderFunction --stack-name cloudflare-logs-forwarder --tail
+sam logs -n CloudflareLogsForwarderFunction --stack-name cloudflare-logs-forwarder --tail
 ```
 
 Note that the above command will only work after the lambda has produced some logs, that is after it has executed at least once.
