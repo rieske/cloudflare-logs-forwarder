@@ -174,7 +174,7 @@ To build and test the lambda function, run:
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds 
 functionality for building and deploying Lambda applications. 
 
-To deploy the lambda function, [download and install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+To deploy the lambda function, [download and install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
 Make sure the AWS CLI user that will deploy the application has the following permissions 
 (you can use the policy template below to create a custom policy in IAM console and attach it to an unprivileged CLI user):
 ```yaml
