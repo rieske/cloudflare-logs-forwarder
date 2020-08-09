@@ -224,6 +224,7 @@ Make sure the AWS CLI user that will deploy the application has the following pe
         "lambda:AddPermission",
         "lambda:RemovePermission",
         "lambda:GetFunctionConfiguration",
+        "lambda:UpdateFunctionConfiguration",
         "lambda:UpdateFunctionCode",
         "lambda:ListTags",
         "lambda:TagResource",
