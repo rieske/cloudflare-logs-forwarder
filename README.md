@@ -289,6 +289,8 @@ sam deploy \
     --parameter-overrides="LambdaRoleArn=<lambda-role> CloudflareLogPushUserArn=<cloudflare-logpush-user-arn> LogForwarderHttpEndpoint=<your-endpoint> LogForwarderCredentials=<your-credentials>"
 ```
 
+This way you can inject the values from your CI environment without storing them in version-controlled `samconfig.toml` file.
+
 ## Logs
 
 The deployed lambda function will send its logs to Cloudwatch.
