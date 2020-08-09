@@ -8,12 +8,12 @@ This project contains an AWS Lambda function that:
 
  - listens to S3 events with uploaded Cloudflare logs using Cloudflare's [logpush](https://developers.cloudflare.com/logs/logpush) service
  - compacts the json logs by cherry-picking fields of interest and producing space-delimited log lines 
-(modify [CompactingLogTransformer](cloudflare-logs-forwarder-function/src/main/java/lt/rieske/logs/forwarder/CompactingLogTransformer.java)
+(modify [CompactingLogTransformer](lambda/src/main/java/lt/rieske/logs/forwarder/CompactingLogTransformer.java)
 and 
-[CompactingLogTransformerTest](cloudflare-logs-forwarder-function/src/test/java/lt/rieske/logs/forwarder/CompactingLogTransformerTest.java) 
+[CompactingLogTransformerTest](lambda/src/test/java/lt/rieske/logs/forwarder/CompactingLogTransformerTest.java) 
 to adjust the data extraction to your needs)
  - forwards the compacted log lines in batches via HTTP to an arbitrary log aggregator 
-(replace [HttpLogConsumer](cloudflare-logs-forwarder-function/src/main/java/lt/rieske/logs/forwarder/HttpLogConsumer.java)
+(replace [HttpLogConsumer](lambda/src/main/java/lt/rieske/logs/forwarder/HttpLogConsumer.java)
 implementation with a client of choice for your aggregator)
  
 ## Context
@@ -151,12 +151,12 @@ a need to reingest a different subset of the data or even chew it full.
 
 This project contains source code and supporting files for a serverless application that you can deploy with the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
 
-- cloudflare-logs-forwarder-function/src/main - Code for the application's Lambda function.
-- cloudflare-logs-forwarder-function/src/test - Tests for the application code. 
+- lambda - Code and tests for the application's Lambda function.
 - template.yaml - A SAM template that defines the application's AWS resources.
 
 The application itself is written in Java11 and built using Gradle.
-The deployment uses several AWS resources, including Cloudformation, Lambda functions and an S3 bucket. 
+The deployment uses several AWS resources: Cloudformation, Lambda and an S3 bucket. 
+See [Deployment](#Deployment) section below for required permissions.
 
 ## Build
 
@@ -169,7 +169,7 @@ To build and test the lambda function, run:
 ./gradlew build
 ```
 
-## Deploy
+## Deployment
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds 
 functionality for building and deploying Lambda applications. 
@@ -289,7 +289,7 @@ sam logs -n CloudflareLogsForwarderFunction --stack-name cloudflare-logs-forward
 ```
 
 Note that the above command will only work after the lambda has produced some logs, that is after it has executed at least once.
-You can manually drop one of the test log archives from `cloudflare-logs-forwarder-function/src/test/resources/` to the logs S3 bucket
+You can manually drop one of the test log archives from `lambda/src/test/resources/` to the logs S3 bucket
 to trigger the lambda if you don't have Cloudflare logpush connected and want to try this out.
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
