@@ -23,7 +23,7 @@ jobs:
       uses: paambaati/codeclimate-action@v2.6.0
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        JACOCO_SOURCE_PATH: cloudflare-logs-forwarder-function/src/main/java
+        JACOCO_SOURCE_PATH: lambda/src/main/java
       with:
         coverageCommand: ./gradlew jacocoTestReport
-        coverageLocations: "${{github.workspace}}/cloudflare-logs-forwarder-function/build/reports/jacoco/test/jacocoTestReport.xml:jacoco"
+        coverageLocations: "${{github.workspace}}/lambda/build/reports/jacoco/test/jacocoTestReport.xml:jacoco"
