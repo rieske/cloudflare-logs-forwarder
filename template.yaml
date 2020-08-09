@@ -53,7 +53,7 @@ Resources:
   CloudflareLogsForwarderFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: cloudflare-logs-forwarder-function
+      CodeUri: lambda
       Role: !Ref LambdaRoleArn
       Handler: lt.rieske.logs.forwarder.S3EventHandler::handleRequest
       Runtime: java11

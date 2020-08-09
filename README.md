@@ -18,7 +18,7 @@ implementation with a client of choice for your aggregator)
  
 ## Context
 
-Cloudflare can be configured to [push the logs to an s3 bucket](https://developers.cloudflare.com/logs/logpush).
+Cloudflare can be configured to [push the logs to an S3 bucket](https://developers.cloudflare.com/logs/logpush).
 It does so every 5 minutes by uploading a gzipped log file where each line is a log entry in [json](https://developers.cloudflare.com/logs/log-fields) format.
 Depending on the amount of traffic that goes via Cloudflare, the logs can be quite massive.
 While storing them in S3 or S3 Glacier can be cheap, companies often want to extract some valuable data from those logs, 

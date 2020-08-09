@@ -1,1 +1,1 @@
-include("cloudflare-logs-forwarder-function")
+include("lambda")
