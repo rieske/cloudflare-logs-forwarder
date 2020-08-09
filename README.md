@@ -280,6 +280,15 @@ The second command will package and deploy your application to AWS, with a serie
 * **Allow SAM CLI IAM role creation**: This template is configured to use an external role, passed by **LambdaRoleArn** parameter above so that the function can be deployed by an unprivileged user. Answer `n` here.
 * **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to the `samconfig.toml` file, so that next time you can just re-run `sam build && sam deploy` without parameters to deploy updates to the lambda function.
 
+Alternatively, instead of guided deployment, you can supply all the required arguments via the command line:
+
+```bash
+sam deploy \
+    --region=<region> \
+    --s3-bucket=<s3-bucket-where-lambda-sources-will-be-uploaded> \
+    --parameter-overrides="LambdaRoleArn=<lambda-role> CloudflareLogPushUserArn=<cloudflare-logpush-user-arn> LogForwarderHttpEndpoint=<your-endpoint> LogForwarderCredentials=<your-credentials>"
+```
+
 ## Logs
 
 The deployed lambda function will send its logs to Cloudwatch.

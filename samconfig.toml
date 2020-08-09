@@ -3,5 +3,6 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "cloudflare-logs-forwarder"
+s3_prefix = "cloudflare-logs-forwarder"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
