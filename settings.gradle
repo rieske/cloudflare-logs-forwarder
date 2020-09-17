@@ -1,1 +1,3 @@
+rootProject.name = "cloudflare-logs-forwarder"
+includeBuild("gradle/build-logic")
 include("lambda")

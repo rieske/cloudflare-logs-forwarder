@@ -1,15 +1,5 @@
 plugins {
-    id("java")
-    id("jacoco")
-}
-
-repositories {
-    mavenCentral()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    id("lambda.java-conventions")
 }
 
 dependencies {
@@ -23,17 +13,4 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.16.1")
     testImplementation("com.adobe.testing:s3mock-junit5:2.1.22")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.27.0")
-}
-
-test {
-    useJUnitPlatform()
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/test.exec")
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
 }
