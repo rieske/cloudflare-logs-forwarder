@@ -7,7 +7,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-events:3.3.1")
     implementation("software.amazon.awssdk:s3:2.14.25")
     implementation("ch.qos.logback:logback-classic:1.2.3")
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.0.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.0.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
     testImplementation("org.assertj:assertj-core:3.17.2")
