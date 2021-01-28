@@ -10,7 +10,7 @@ dependencies {
     implementation("org.apache.httpcomponents.client5:httpclient5:5.0.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    testImplementation("org.assertj:assertj-core:3.18.0")
+    testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.adobe.testing:s3mock-junit5:2.1.28")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.27.0")
 }
