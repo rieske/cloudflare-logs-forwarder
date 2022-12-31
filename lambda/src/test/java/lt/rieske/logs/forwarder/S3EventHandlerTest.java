@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -122,7 +123,7 @@ class S3EventHandlerTest {
     }
 
     private static S3Event logsUploadedEvent(S3Client s3, String key) {
-        String bucketName = "test-cloudflare-logs";
+        String bucketName = "test-cloudflare-logs-" + UUID.randomUUID();
 
         s3.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
         s3.putObject(PutObjectRequest.builder().bucket(bucketName).key(key).build(), RESOURCES_DIR.resolve(key));
