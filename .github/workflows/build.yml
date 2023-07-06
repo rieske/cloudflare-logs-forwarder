@@ -19,7 +19,7 @@ jobs:
     - name: Build
       run: ./gradlew build
     - name: Upload code coverage report to codeclimate
-      uses: paambaati/codeclimate-action@v4.0.0
+      uses: paambaati/codeclimate-action@v5.0.0
       env:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
         JACOCO_SOURCE_PATH: lambda/src/main/java
