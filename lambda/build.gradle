@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.amazonaws:aws-lambda-java-core:1.2.2")
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.2")
     implementation("software.amazon.awssdk:s3:2.20.129")
     implementation("ch.qos.logback:logback-classic:1.2.11")
