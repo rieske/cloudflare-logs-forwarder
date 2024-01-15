@@ -12,8 +12,14 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-test {
-    useJUnitPlatform()
+testing.suites {
+    test {
+        useJUnitJupiter()
+    }
+}
+
+
+tasks.named("test") {
     jacoco {
         destinationFile = file("$buildDir/jacoco/test.exec")
     }
