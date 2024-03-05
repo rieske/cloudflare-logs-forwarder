@@ -26,10 +26,13 @@ class HttpLogConsumer implements CloseableLogConsumer {
         var request = new HttpPost(endpoint);
         request.setEntity(new StringEntity(payload, ContentType.TEXT_PLAIN));
         request.setHeader("Authorization", credentials);
-        try (var response = httpClient.execute(request)) {
-            if (response.getCode() != 200) {
-                throw new IOException("Error consuming logs: " + response.getReasonPhrase());
-            }
+        try {
+            httpClient.execute(request, response -> {
+                if (response.getCode() != 200) {
+                    throw new IOException("Error consuming logs: " + response.getReasonPhrase());
+                }
+                return response;
+            });
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

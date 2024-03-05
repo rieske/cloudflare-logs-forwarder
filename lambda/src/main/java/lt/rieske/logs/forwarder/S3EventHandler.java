@@ -30,6 +30,8 @@ public class S3EventHandler implements RequestHandler<S3Event, Integer> {
     private final Consumer<String> logForwarder;
     private final Closeable flusher;
 
+    // The no-args constructor is invoked by the AWS Lambda runtime
+    @SuppressWarnings("unused")
     public S3EventHandler() {
         this(S3Client.builder().build(), getRequiredEnvVar("LogForwarderHttpEndpoint"),
                 getRequiredEnvVar("LogForwarderCredentials"), 1000);
