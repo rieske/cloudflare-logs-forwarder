@@ -14,14 +14,8 @@ testing.suites {
     }
 }
 
-
-tasks.named("test") {
-    jacoco {
-        destinationFile = file("$buildDir/jacoco/test.exec")
-    }
-}
-
 jacocoTestReport {
+    dependsOn(test)
     reports {
         xml.required = true
     }
