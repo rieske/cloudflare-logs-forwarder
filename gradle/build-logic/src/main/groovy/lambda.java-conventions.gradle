@@ -3,10 +3,6 @@ plugins {
     id("jacoco")
 }
 
-repositories {
-    mavenCentral()
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -15,6 +11,13 @@ java {
 testing.suites {
     test {
         useJUnitJupiter()
+    }
+}
+
+
+tasks.named("test") {
+    jacoco {
+        destinationFile = file("$buildDir/jacoco/test.exec")
     }
 }
 
