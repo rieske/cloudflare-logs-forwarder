@@ -8,7 +8,7 @@ dependencies {
     implementation("software.amazon.awssdk:s3:2.25.6")
     implementation("ch.qos.logback:logback-classic:1.5.3")
     implementation("org.apache.httpcomponents.client5:httpclient5:5.3.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.assertj:assertj-core:3.25.3")
