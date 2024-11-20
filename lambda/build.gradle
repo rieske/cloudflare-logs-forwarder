@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.3")
     implementation("com.amazonaws:aws-lambda-java-events:3.14.0")
-    implementation("software.amazon.awssdk:s3:2.29.16")
+    implementation("software.amazon.awssdk:s3:2.29.17")
     implementation("ch.qos.logback:logback-classic:1.5.12")
     implementation("org.apache.httpcomponents.client5:httpclient5:5.4.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.1")
