@@ -13,5 +13,5 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation("org.assertj:assertj-core:3.27.3")
     testImplementation("com.adobe.testing:s3mock-junit5:3.12.0")
-    testImplementation("org.wiremock:wiremock-standalone:3.10.0")
+    testImplementation("org.wiremock:wiremock-standalone:3.11.0")
 }
