@@ -11,7 +11,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
-    testImplementation("org.assertj:assertj-core:3.27.3")
+    testImplementation("org.assertj:assertj-core:3.27.4")
     testImplementation("com.adobe.testing:s3mock-junit5:4.7.0")
     testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
