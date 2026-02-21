@@ -28,6 +28,8 @@ jobs:
       run: ./gradlew jacocoTestReport
     - name: Upload code coverate report
       uses: qltysh/qlty-action/coverage@v2
+      env:
+        JACOCO_SOURCE_PATH: lambda/src/main/java
       with:
         token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: lambda/build/reports/jacoco/test/jacocoTestReport.xml
