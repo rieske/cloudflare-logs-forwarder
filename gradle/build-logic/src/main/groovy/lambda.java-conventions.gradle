@@ -4,14 +4,18 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 testing.suites {
     test {
         useJUnitJupiter()
     }
+}
+
+tasks.named("test") {
+    finalizedBy("jacocoTestReport")
 }
 
 jacocoTestReport {
