@@ -26,7 +26,7 @@ jobs:
       run: sam build --debug
     - name: Generate code coverage report
       run: ./gradlew jacocoTestReport
-    - name: Upload code coverate report
+    - name: Upload code coverage report
       uses: qltysh/qlty-action/coverage@v2
       env:
         JACOCO_SOURCE_PATH: lambda/src/main/java
