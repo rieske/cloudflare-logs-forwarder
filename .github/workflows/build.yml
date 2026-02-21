@@ -24,6 +24,8 @@ jobs:
         use-installer: true
     - name: Build
       run: sam build --debug
+    - name: Generate code coverage report
+      run: ./gradlew jacocoTestReport
     - name: Upload code coverate report
       uses: qltysh/qlty-action/coverage@v2
       with:
