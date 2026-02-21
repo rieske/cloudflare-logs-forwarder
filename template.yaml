@@ -56,7 +56,7 @@ Resources:
       CodeUri: lambda
       Role: !Ref LambdaRoleArn
       Handler: lt.rieske.logs.forwarder.S3EventHandler::handleRequest
-      Runtime: java11
+      Runtime: java25
       MemorySize: 256
       Environment:
         Variables:
