@@ -7,7 +7,7 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-events:3.16.1")
     implementation("software.amazon.awssdk:s3:2.42.36")
     implementation("ch.qos.logback:logback-classic:1.5.32")
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.6")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.6.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.21.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
